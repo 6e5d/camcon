@@ -51,6 +51,21 @@ void camcon_compute(Camcon* cc, mat4 result) {
 	glm_lookat(obpos, cc->c, up, result);
 }
 
+// relative to view coordinate
+void camcon_transpose(Camcon* cc, vec3 dp) {
+	mat4 iview;
+	mat3 irot;
+	camcon_compute(cc, iview);
+	glm_mat4_inv(iview, iview);
+	for (size_t i = 0; i < 3; i++) {
+		for (size_t j = 0; j < 3; j++) {
+			irot[i][j] = iview[i][j];
+		}
+	}
+	glm_mat3_mulv(irot, dp, dp);
+	glm_vec3_add(dp, cc->c, cc->c);
+}
+
 void camcon_init(Camcon* cc) {
 	*cc = (Camcon) {
 		.c = {0.0f, 0.1f, 0.0f},
