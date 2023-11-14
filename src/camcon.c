@@ -52,7 +52,7 @@ void camcon_compute(Camcon* cc, mat4 result) {
 }
 
 // relative to view coordinate
-void camcon_transpose(Camcon* cc, vec3 dp) {
+void camcon_translate(Camcon* cc, vec3 dp) {
 	mat4 iview;
 	mat3 irot;
 	camcon_compute(cc, iview);
@@ -69,9 +69,9 @@ void camcon_transpose(Camcon* cc, vec3 dp) {
 void camcon_init(Camcon* cc) {
 	*cc = (Camcon) {
 		.c = {0.0f, 0.1f, 0.0f},
-		.r = 0.3f,
+		.r = 1.5f,
 		.xy = 0.0f,
-		.p = 0.1f,
+		.p = 0.2f,
 	};
 }
 
