@@ -3,7 +3,7 @@
 
 #include "../include/camcon.h"
 
-static const float PI = (float)M_PI;
+static const float PI = 3.14159265359f;
 static const float MAX_PITCH = PI * 0.4999f;
 
 static void picap(float* x) {
