@@ -2,19 +2,22 @@
 #define INCLUDEGUARD_CAMCON
 
 #include <cglm/cglm.h>
+#define CglmMat4 mat4
+#define CglmMat3 mat3
+#define CglmVec3 vec3
 
 typedef struct {
-	vec3 c;
+	CglmVec3 c;
 	float r;
 	float xy;
 	float p;
-} Camcon;
+} Camcon();
 
-void camcon_compute(Camcon* cc, mat4 result);
-void camcon_translate(Camcon* cc, vec3 dp);
-void camcon_obpos(Camcon* cc, vec3 result);
-void camcon_lookn(Camcon* cc, vec3 result);
-void camcon_rotate(Camcon* cc, float dx, float dy);
-void camcon_init(Camcon* cc);
+void camcon(compute)(Camcon()* cc, CglmMat4 result);
+void camcon(translate)(Camcon()* cc, CglmVec3 dp);
+void camcon(obpos)(Camcon()* cc, CglmVec3 result);
+void camcon(lookn)(Camcon()* cc, CglmVec3 result);
+void camcon(rotate)(Camcon()* cc, float dx, float dy);
+void camcon(init)(Camcon()* cc);
 
 #endif

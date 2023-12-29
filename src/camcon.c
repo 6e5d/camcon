@@ -3,29 +3,29 @@
 
 #include "../include/camcon.h"
 
-static const float PI = 3.14159265359f;
-static const float MAX_PITCH = PI * 0.4999f;
+#define math_pi 3.14159265359f
 
 static void picap(float* x) {
-	while (*x < -PI) {
-		*x += PI * 2;
+	while (*x < -math_pi) {
+		*x += math_pi * 2;
 	}
-	while (*x >= PI) {
-		*x -= PI * 2;
+	while (*x >= math_pi) {
+		*x -= math_pi * 2;
 	}
 }
 
 static void piblock(float* x) {
-	if (*x < -MAX_PITCH) {
-		*x = -MAX_PITCH;
+	float max_pitch = math_pi * 0.4999f;
+	if (*x < -max_pitch) {
+		*x = -max_pitch;
 	}
-	if (*x >= MAX_PITCH) {
-		*x = MAX_PITCH;
+	if (*x >= max_pitch) {
+		*x = max_pitch;
 	}
 }
 
 // the ray of looking(normalized)
-void camcon_lookn(Camcon* cc, vec3 result) {
+void camcon(lookn)(Camcon()* cc, CglmVec3 result) {
 	float rpc = cc->r * cosf(cc->p);
 	result[0] = rpc * cosf(cc->xy);
 	result[1] = cc->r * sinf(cc->p);
@@ -34,9 +34,9 @@ void camcon_lookn(Camcon* cc, vec3 result) {
 }
 
 // observer's position
-void camcon_obpos(Camcon* cc, vec3 result) {
+void camcon(obpos)(Camcon()* cc, CglmVec3 result) {
 	float rpc = cc->r * cosf(cc->p);
-	vec3 t = {
+	CglmVec3 t = {
 		rpc * cosf(cc->xy),
 		cc->r * sinf(cc->p),
 		rpc * sinf(cc->xy),
@@ -44,21 +44,21 @@ void camcon_obpos(Camcon* cc, vec3 result) {
 	glm_vec3_add(t, cc->c, result);
 }
 
-void camcon_compute(Camcon* cc, mat4 result) {
-	vec3 obpos;
-	camcon_obpos(cc, obpos);
-	vec3 up = {0.0f, -1.0f, 0.0f};
+void camcon(compute)(Camcon()* cc, CglmMat4 result) {
+	CglmVec3 obpos;
+	camcon(obpos)(cc, obpos);
+	CglmVec3 up = {0.0f, -1.0f, 0.0f};
 	glm_lookat(obpos, cc->c, up, result);
 }
 
 // relative to view coordinate
-void camcon_translate(Camcon* cc, vec3 dp) {
-	mat4 iview;
-	mat3 irot;
-	camcon_compute(cc, iview);
+void camcon(translate)(Camcon()* cc, CglmVec3 dp) {
+	CglmMat4 iview;
+	CglmMat3 irot;
+	camcon(compute)(cc, iview);
 	glm_mat4_inv(iview, iview);
-	for (size_t i = 0; i < 3; i++) {
-		for (size_t j = 0; j < 3; j++) {
+	for (size_t i = 0; i < 3; i += 1) {
+		for (size_t j = 0; j < 3; j += 1) {
 			irot[i][j] = iview[i][j];
 		}
 	}
@@ -66,8 +66,8 @@ void camcon_translate(Camcon* cc, vec3 dp) {
 	glm_vec3_add(dp, cc->c, cc->c);
 }
 
-void camcon_init(Camcon* cc) {
-	*cc = (Camcon) {
+void camcon(init)(Camcon()* cc) {
+	*cc = (Camcon()) {
 		.c = {0.0f, 0.1f, 0.0f},
 		.r = 1.5f,
 		.xy = 0.0f,
@@ -75,7 +75,7 @@ void camcon_init(Camcon* cc) {
 	};
 }
 
-void camcon_rotate(Camcon* cc, float dx, float dy) {
+void camcon(rotate)(Camcon()* cc, float dx, float dy) {
 	cc->xy += dx;
 	picap(&cc->xy);
 	cc->p += dy;
