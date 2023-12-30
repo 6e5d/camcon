@@ -1,9 +1,8 @@
 #include <math.h>
-#include <cglm/cglm.h>
 
 #include "../include/camcon.h"
 
-#define math_pi 3.14159265359f
+const static float math_pi = 3.14159265359f;
 
 static void picap(float* x) {
 	while (*x < -math_pi) {
@@ -25,7 +24,7 @@ static void piblock(float* x) {
 }
 
 // the ray of looking(normalized)
-void camcon(lookn)(Camcon()* cc, CglmVec3 result) {
+void camcon(lookn)(Camcon()* cc, vec3 result) {
 	float rpc = cc->r * cosf(cc->p);
 	result[0] = rpc * cosf(cc->xy);
 	result[1] = cc->r * sinf(cc->p);
@@ -34,9 +33,9 @@ void camcon(lookn)(Camcon()* cc, CglmVec3 result) {
 }
 
 // observer's position
-void camcon(obpos)(Camcon()* cc, CglmVec3 result) {
+void camcon(obpos)(Camcon()* cc, vec3 result) {
 	float rpc = cc->r * cosf(cc->p);
-	CglmVec3 t = {
+	vec3 t = {
 		rpc * cosf(cc->xy),
 		cc->r * sinf(cc->p),
 		rpc * sinf(cc->xy),
@@ -44,17 +43,17 @@ void camcon(obpos)(Camcon()* cc, CglmVec3 result) {
 	glm_vec3_add(t, cc->c, result);
 }
 
-void camcon(compute)(Camcon()* cc, CglmMat4 result) {
-	CglmVec3 obpos;
+void camcon(compute)(Camcon()* cc, mat4 result) {
+	vec3 obpos;
 	camcon(obpos)(cc, obpos);
-	CglmVec3 up = {0.0f, -1.0f, 0.0f};
+	vec3 up = {0.0f, -1.0f, 0.0f};
 	glm_lookat(obpos, cc->c, up, result);
 }
 
 // relative to view coordinate
-void camcon(translate)(Camcon()* cc, CglmVec3 dp) {
-	CglmMat4 iview;
-	CglmMat3 irot;
+void camcon(translate)(Camcon()* cc, vec3 dp) {
+	mat4 iview;
+	mat3 irot;
 	camcon(compute)(cc, iview);
 	glm_mat4_inv(iview, iview);
 	for (size_t i = 0; i < 3; i += 1) {
